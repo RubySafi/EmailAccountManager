@@ -8,5 +8,6 @@ namespace EmailAccountManager
 {
     internal class hoge
     {
+        int a = 0;
     }
 }
