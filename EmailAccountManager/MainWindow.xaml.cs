@@ -19,6 +19,30 @@ namespace EmailAccountManager
         public MainWindow()
         {
             InitializeComponent();
+
+            var data = new List<SiteInfo>
+            {
+                new SiteInfo("example.com"),
+                new SiteInfo("example.com"),
+            };
+        }
+
+        private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (SearchTextBox.Text == "Enter email address to filter...")
+            {
+                SearchTextBox.Text = "";
+                SearchTextBox.Foreground = Brushes.Black;
+            }
+        }
+
+        private void SearchTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(SearchTextBox.Text))
+            {
+                SearchTextBox.Text = "Enter email address to filter...";
+                SearchTextBox.Foreground = Brushes.Gray;
+            }
         }
     }
 }

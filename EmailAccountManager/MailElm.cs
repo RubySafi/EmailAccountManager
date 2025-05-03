@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace EmailAccountManager
 {
-    internal class hoge
+    internal class MailElm
     {
-        int a = 0;
+        public string Address { get; set; }
+        public string Comment { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }
