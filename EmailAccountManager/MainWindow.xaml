@@ -4,10 +4,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EmailAccountManager"
-        mc:Ignorable="d" Background="#F5F5F5"
+        mc:Ignorable="d" 
         Title="Account Manager" Height="450" Width="800" ResizeMode="CanMinimize">
 
+    
     <Window.Resources>
+        <Style x:Key="SubtleFocusVisualStyle" TargetType="{x:Type Control}">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="-1"
+                               StrokeThickness="1"
+                               Stroke="#222222"
+                               StrokeDashArray="1.2 1.2" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style TargetType="DataGridRow">
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="Black"/>
@@ -32,53 +46,84 @@
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="Margin" Value="0,0,0,0" />
         </Style>
+
+
+        <ContextMenu x:Key="SiteContextMenu">
+            <MenuItem Header="New Item (_N)" InputGestureText="Ctrl+N" Click="AddMenuItem_Click"/>
+            <MenuItem Header="Edit Item (_E)" InputGestureText="Ctrl+E" Click="EditMenuItem_Click"/>
+            <Separator/>
+            <MenuItem Header="Delete Item (_D)" InputGestureText="Ctrl+D" Click="DeleteMenuItem_Click"/>
+        </ContextMenu>
+
     </Window.Resources>
 
-    <Grid Margin="0,5,0,0">
+
+    <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>            <!-- Search  -->
-            <RowDefinition Height="*"/>            <!-- Display all -->
-            <RowDefinition Height="Auto"/>  <!-- Status bar -->
+            <RowDefinition Height="Auto"/>
+            <!-- ToolBar -->
+            <RowDefinition Height="1"/>
+            <!-- Separator  -->
+            <RowDefinition Height="Auto"/>
+            <!-- Search  -->
+            <RowDefinition Height="*"/>
+            <!-- Display all -->
+            <RowDefinition Height="Auto"/>
+            <!-- Status bar -->
         </Grid.RowDefinitions>
 
+        <Grid Grid.Row="0" Background="#FFF0F0F0" Height="24">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,0,0">
+                <Button Width="20" Height="20" ToolTip="Add a new item" Click="AddButton_Click">
+                    <Image Source="pack://application:,,,/Resources/add_16dp_1F1F1F.png" Width="16" Height="16"/>
+                </Button>
+                <Button Width="20" Height="20" ToolTip="Edit the selected item" Margin="4,0,0,0" Click="EditButton_Click">
+                    <Image Source="pack://application:,,,/Resources/mode_edit_16dp_1F1F1F.png" Width="16" Height="16"/>
+                </Button>
+                <Button Width="20" Height="20" ToolTip="Delete the selected item" Margin="4,0,0,0" Click="DeleteButton_Click">
+                    <Image Source="pack://application:,,,/Resources/delete_16dp_1F1F1F.png" Width="16" Height="16"/>
+                </Button>
+            </StackPanel>
+
+            <CheckBox x:Name="AutoLoginCheckBox" Grid.Column="2" FocusVisualStyle="{StaticResource SubtleFocusVisualStyle}" 
+                      Content="Auto login" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="0,0,10,0"/>
+        </Grid>
+
+        <Border Grid.Row="1" Background="Gray" Height="1" />
+
+
         <!-- Search Box -->
-        <Grid Grid.Row="0" Margin="0,0,0,10">
+        <Grid Grid.Row="2" Margin="0,0,0,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="79*"/>
+                <ColumnDefinition Width="133*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <CheckBox x:Name="UseFilterCheckBox"
-              Content="Use Filter" Margin="5,0,4,0" VerticalAlignment="Center" Checked="UseFilterCheckBox_Checked" Unchecked="UseFilterCheckBox_Unchecked"/>
+            <CheckBox x:Name="UseFilterCheckBox" Grid.Column="0"
+              Content="Use Filter" Margin="5,5,4,0" VerticalAlignment="Center" Checked="UseFilterCheckBox_Checked" Unchecked="UseFilterCheckBox_Unchecked"/>
 
 
-            <TextBox x:Name="SearchTextBox" Margin="0,0,10,0" Grid.Column="1" VerticalAlignment="Center" TextChanged="SearchTextBox_TextChanged" 
-                     HorizontalAlignment="Stretch" Background="Transparent" />
-                
+            <TextBox x:Name="SearchTextBox" Grid.Column="1" Margin="0,5,5,0" MinHeight="20"
+                     VerticalAlignment="Center" TextChanged="SearchTextBox_TextChanged" 
+                     Background="Transparent" Grid.ColumnSpan="3" />
 
-                <Label Content="Enter email address to filter..." Grid.Column="1"
-                   x:Name="PlaceholderLabel" Foreground="Gray" Margin="4,0,0,0" VerticalAlignment="Center"
-                   IsHitTestVisible="False" Background="Transparent" Padding="0" Visibility="Visible" />
 
-            <TextBlock Text="Right-click to add, delete, or edit." VerticalAlignment="Center"
-               Grid.Column="2" Margin="0,0,5,0"/>
+            <Label Content="Enter email address to filter..." Grid.Column="1"
+                   x:Name="PlaceholderLabel" Foreground="Gray" Margin="5,5,0,0" VerticalAlignment="Center"
+                   IsHitTestVisible="False" Background="Transparent" Padding="0" Visibility="Visible" Grid.ColumnSpan="2" />
+
+
         </Grid>
 
 
         <!-- DataGrid with site information -->
-        <DataGrid x:Name="SiteDataGrid" Grid.Row="1" Margin="5,0,5,0" SelectionMode="Single" AutoGenerateColumns="False"
+        <DataGrid x:Name="SiteDataGrid" Grid.Row="3" Margin="5,0,5,5" SelectionMode="Single" AutoGenerateColumns="False"
                   HeadersVisibility="Column" GridLinesVisibility="All"  CanUserResizeColumns="True" CanUserSortColumns="True"
                   HorizontalScrollBarVisibility="Auto"
-                  IsReadOnly="True" ItemsSource="{Binding FilteredSiteList}">
-            <DataGrid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Add New" Click="AddMenuItem_Click"/>
-                    <MenuItem Header="Edit" Click="EditMenuItem_Click"/>
-                    <Separator/>
-                    <MenuItem Header="Delete" Click="DeleteMenuItem_Click"/>
-                </ContextMenu>
-            </DataGrid.ContextMenu>
+                  IsReadOnly="True" ItemsSource="{Binding FilteredSiteList}"
+                  MouseRightButtonDown="SiteDataGrid_MouseRightButtonDown">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding SiteName}" Width="120"/>
                 <DataGridTextColumn Header="Security" Binding="{Binding SecurityLevel}" Width="100"/>
@@ -88,7 +133,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <StatusBar Grid.Row="2" VerticalAlignment="Bottom" Height="Auto" BorderBrush="Gray" BorderThickness="0,1,0,0">
+        <StatusBar Grid.Row="4" VerticalAlignment="Bottom" Height="Auto" BorderBrush="Gray" BorderThickness="0,1,0,0">
             <StatusBarItem Style="{StaticResource StatusBarItemStyle}">
                 <TextBlock x:Name="StatusUserTextBlock" Text="User: administrator" />
             </StatusBarItem>

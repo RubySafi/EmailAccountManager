@@ -11,6 +11,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows.Controls.Primitives;
 
 namespace EmailAccountManager
 {
@@ -24,10 +25,12 @@ namespace EmailAccountManager
 
         public string CurrentUserName = "administrator";
 
+
         public MainWindow()
         {
             InitializeComponent();
 
+            this.PreviewKeyDown += MainWindow_PreviewKeyDown;
 
             string userDatabaseFolder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "db");
             if (!Directory.Exists(userDatabaseFolder))
@@ -45,6 +48,25 @@ namespace EmailAccountManager
             UpdateStatusBar();
 
             this.DataContext = this;
+        }
+
+        private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.N)
+            {
+                e.Handled = true;
+                AddItem();
+            }
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.D)
+            {
+                e.Handled = true;
+                DeleteItem();
+            }
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.E)
+            {
+                e.Handled = true;
+                EditItem();
+            }
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -130,11 +152,10 @@ namespace EmailAccountManager
             UpdateStatusBar();
         }
 
-
-        private void AddMenuItem_Click(object sender, RoutedEventArgs e)
+        private void AddItem()
         {
             AddWindow addWindow = new AddWindow();
-            bool? result = addWindow.ShowDialog(); 
+            bool? result = addWindow.ShowDialog();
 
             if (result == true)
             {
@@ -144,7 +165,13 @@ namespace EmailAccountManager
                 UpdateStatusBar();
             }
         }
-        private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
+
+        private void AddMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            AddItem();
+        }
+
+        private void DeleteItem()
         {
             if (SiteDataGrid.SelectedItem != null)
             {
@@ -172,9 +199,13 @@ namespace EmailAccountManager
             }
         }
 
-        private void EditMenuItem_Click(object sender, RoutedEventArgs e)
+        private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            DeleteItem();
+        }
 
+        private void EditItem()
+        {
             if (SiteDataGrid.SelectedItem != null)
             {
                 var item = (SiteInfo)SiteDataGrid.SelectedItem;
@@ -191,6 +222,59 @@ namespace EmailAccountManager
                 }
             }
         }
+
+        private void SiteDataGrid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var dataGrid = sender as DataGrid;
+
+            Point relativePosition = e.GetPosition(dataGrid);
+
+            // Calculate the ideal position to show the context menu (the default position is strange)
+            if (this.FindResource("SiteContextMenu") is ContextMenu contextMenu)
+            {
+                contextMenu.PlacementTarget = dataGrid;
+                contextMenu.Placement = PlacementMode.Relative;
+
+                // Open the context menu and measure its size
+                contextMenu.IsOpen = true;
+                contextMenu.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                contextMenu.Arrange(new Rect(0, 0, contextMenu.DesiredSize.Width, contextMenu.DesiredSize.Height));
+
+                // Set the position based on the measured size
+                contextMenu.HorizontalOffset = relativePosition.X + contextMenu.DesiredSize.Width;
+                contextMenu.VerticalOffset = relativePosition.Y;
+
+                contextMenu.IsOpen = true;
+                e.Handled = true;
+            }
+
+        }
+
+
+
+
+
+
+        private void EditMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            EditItem();
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddItem();
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditItem();
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteItem();
+        }
+
 
         private void UpdateStatusBar()
         {
