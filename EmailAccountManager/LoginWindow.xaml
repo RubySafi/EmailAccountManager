@@ -6,6 +6,16 @@
         xmlns:local="clr-namespace:EmailAccountManager"
         mc:Ignorable="d" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
         Title="Login" Height="250" Width="250" ResizeMode="NoResize" WindowStyle="ToolWindow">
+
+    <Window.Resources>
+        <ContextMenu x:Key="SiteContextMenu">
+            <MenuItem Header="New Item (_N)" InputGestureText="Ctrl+N" Click="AddMenuItem_Click"/>
+            <MenuItem Header="Edit Item (_E)" InputGestureText="Ctrl+E" Click="EditMenuItem_Click"/>
+            <Separator/>
+            <MenuItem Header="Delete Item (_D)" InputGestureText="Ctrl+D" Click="DeleteMenuItem_Click"/>
+        </ContextMenu>
+    </Window.Resources>
+    
     <Grid Margin="5,5,5,5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -28,7 +38,7 @@
         <ListBox x:Name="AccountListBox"
                  Grid.Row="1"
                  Margin="0,5,0,0"
-                 SelectionMode="Single" />
+                 SelectionMode="Single" PreviewMouseRightButtonDown="AccountListBox_PreviewMouseRightButtonDown"/>
 
         <!-- Buttons -->
         <StackPanel Grid.Row="2" Orientation="Horizontal"

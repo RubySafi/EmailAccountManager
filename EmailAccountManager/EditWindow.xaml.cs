@@ -101,6 +101,7 @@ namespace EmailAccountManager
                 SecurityLevel.None => 0,
                 SecurityLevel.General => 1,
                 SecurityLevel.Finance => 2,
+                _ => 0,
             };
         }
     }

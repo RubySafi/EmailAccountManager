@@ -15,21 +15,32 @@ using System.Windows.Shapes;
 namespace EmailAccountManager
 {
     /// <summary>
-    /// RegisterAccountWindow.xaml
+    /// EditAccountWindow.xaml
     /// </summary>
-    public partial class RegisterAccountWindow : Window
+    public partial class EditAccountWindow : Window
     {
         private AppSetting appSetting;
+        string accountNameInitial;
+        string accountNameCurrent;
 
-        public RegisterAccountWindow(AppSetting appSetting)
+        public EditAccountWindow(AppSetting appSetting, string accountNameInitial)
         {
             InitializeComponent();
             this.appSetting = appSetting;
-        }
+            this.accountNameInitial = accountNameInitial;
+            this.accountNameCurrent = accountNameInitial;
 
-        private void RegisterButton_Click(object sender, RoutedEventArgs e)
+            UserNameTextBox.Text = accountNameInitial;
+        }
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             string username = UserNameTextBox.Text.Trim();
+
+            if (username == accountNameInitial)
+            {
+                ErrorMessageTextBlock.Text = "Username does not changed.";
+                return;
+            }
 
             if (string.IsNullOrEmpty(username))
             {
@@ -49,12 +60,10 @@ namespace EmailAccountManager
                 return;
             }
 
-            appSetting.UserNames.Add(username);
-            appSetting.DefaultUser = username;
             ErrorMessageTextBlock.Text = "";
+            this.accountNameCurrent = username;
             DialogResult = true;
         }
-
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
@@ -75,5 +84,10 @@ namespace EmailAccountManager
             return false;
         }
 
+
+        public string GetNewAccount()
+        {
+            return accountNameCurrent;
+        }
     }
 }
