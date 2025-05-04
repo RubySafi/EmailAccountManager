@@ -45,17 +45,27 @@ namespace EmailAccountManager
         // Add email to the list
         private void AddEmailButton_Click(object sender, RoutedEventArgs e)
         {
-            string email = EmailInputTextBox.Text;
-            string comment = EmailCommentTextBox.Text;
+            string email = EmailInputTextBox.Text.Trim();
+            string comment = EmailCommentTextBox.Text.Trim();
 
 
-            if (!string.IsNullOrEmpty(email))
+            if (string.IsNullOrWhiteSpace(email))
             {
-                var emailElm = new MailElm() { Address = email, Comment = comment, Timestamp = DateTime.Now };
-                EmailList.Add(emailElm);
-                EmailInputTextBox.Clear();
-                EmailCommentTextBox.Clear();
+                MessageBox.Show("Email address cannot be empty.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
+
+            if (EmailList.Any(e => string.Equals(e.Address, email, StringComparison.OrdinalIgnoreCase)))
+            {
+                MessageBox.Show("This email address has already been added.", "Duplicate Entry", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var emailElm = new MailElm() { Address = email, Comment = comment, Timestamp = DateTime.Now };
+            EmailList.Add(emailElm);
+            EmailInputTextBox.Clear();
+            EmailCommentTextBox.Clear();
+
         }
 
         // Remove selected email from the list
@@ -69,13 +79,33 @@ namespace EmailAccountManager
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            string siteName = SiteNameTextBox.Text;
-            SelectedSecurityLevel = (SecurityLevel)SecurityLevelComboBox.SelectedItem;
+            string siteName = SiteNameTextBox.Text.Trim();
+            var selectedLevel = SecurityLevelComboBox.SelectedItem;
 
+
+            if (string.IsNullOrWhiteSpace(siteName))
+            {
+                MessageBox.Show("Site name cannot be empty.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (selectedLevel == null)
+            {
+                MessageBox.Show("Please select a security level.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (EmailList == null || EmailList.Count == 0)
+            {
+                MessageBox.Show("At least one email address must be added.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+
+            SelectedSecurityLevel = (SecurityLevel)SecurityLevelComboBox.SelectedItem;
             siteInfo.Timestamp = DateTime.Now;
             siteInfo.SiteName = siteName;
             siteInfo.SecurityLevel = SelectedSecurityLevel;
-
             siteInfo.EmailList = EmailList.ToList();
 
             this.DialogResult = true;

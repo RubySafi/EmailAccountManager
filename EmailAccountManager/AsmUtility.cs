@@ -10,6 +10,8 @@ namespace EmailAccountManager
 {
     public static class AsmUtility
     {
+        public const int MeasureVersion = 1;
+        public const int MinorVersion = 1;
         public static string GetAssemblyDirectoryName()
         {
             string location = Assembly.GetEntryAssembly().Location;
@@ -19,6 +21,16 @@ namespace EmailAccountManager
         {
             string location = Assembly.GetEntryAssembly().Location;
             return Path.GetFileNameWithoutExtension(location);
+        }
+
+        public static string GetAssemblyVersion()
+        {
+            return string.Concat(new object[]
+            {
+                MeasureVersion.ToString(),
+                '.',
+                MinorVersion.ToString("d2"),
+            });
         }
     }
 }

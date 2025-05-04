@@ -31,6 +31,10 @@ It supports multiple users and enables easy tracking, editing, and backup of acc
 When changing your primary email address, this tool helps you quickly identify which sites need to be updated. 
 This ensures you do not miss critical services during the transition.
 
+Note: Although this application is designed to manage email-based registrations, 
+it also supports using phone numbers in place of email addresses.
+You can freely enter phone numbers instead of emails if a service uses phone-based login.
+
 ## Technologies Used
 
 - WPF (.NET Desktop Application)

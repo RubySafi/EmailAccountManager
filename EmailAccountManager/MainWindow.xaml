@@ -86,7 +86,8 @@
             </StackPanel>
 
             <CheckBox x:Name="AutoLoginCheckBox" Grid.Column="2" FocusVisualStyle="{StaticResource SubtleFocusVisualStyle}" 
-                      Content="Auto login" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="0,0,10,0"/>
+                      Content="Auto login" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="0,0,10,0"
+                      ToolTip="When checked, the application will skip the login screen and start directly with this user." />
         </Grid>
 
         <Border Grid.Row="1" Background="Gray" Height="1" />

@@ -63,6 +63,8 @@ namespace EmailAccountManager
             UpdateStatusBar();
 
             this.DataContext = this;
+
+            this.Title = $"Account Manager {AsmUtility.GetAssemblyVersion()}";
         }
 
         private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -178,8 +180,20 @@ namespace EmailAccountManager
             if (result == true)
             {
                 var newSiteInfo = addWindow.GetNewSite();
+
+                bool isDuplicate = SiteList.Any(s => string.Equals(s.SiteName, newSiteInfo.SiteName, StringComparison.OrdinalIgnoreCase));
+                if (isDuplicate)
+                {
+                    MessageBox.Show("A site with the same name already exists.",
+                        "Duplicate Site", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 SiteList.Add(newSiteInfo);
                 DatabaseHelper.SaveSites(SiteList);
+
+
+                ApplyFilter();
                 UpdateStatusBar();
             }
         }
@@ -212,6 +226,8 @@ namespace EmailAccountManager
                     SiteList.Remove((SiteInfo)SiteDataGrid.SelectedItem);
                     SiteDataGrid.SelectedItem = null;
                     DatabaseHelper.SaveSites(SiteList);
+
+                    ApplyFilter();
                     UpdateStatusBar();
                 }
             }
@@ -226,16 +242,29 @@ namespace EmailAccountManager
         {
             if (SiteDataGrid.SelectedItem != null)
             {
-                var item = (SiteInfo)SiteDataGrid.SelectedItem;
-                var itemCopy = new SiteInfo(item);
+                var originalItem = (SiteInfo)SiteDataGrid.SelectedItem;
+                var itemCopy = new SiteInfo(originalItem);
                 EditWindow editWindow = new EditWindow(itemCopy);
                 bool? result = editWindow.ShowDialog();
 
                 if (result == true)
                 {
                     var newSiteInfo = editWindow.GetNewSite();
-                    SiteList[SiteList.IndexOf(item)] = newSiteInfo;
+
+                    bool isDuplicate = SiteList.Where(s => s != originalItem)
+                                                .Any(s => string.Equals(s.SiteName, newSiteInfo.SiteName, StringComparison.OrdinalIgnoreCase));
+
+                    if (isDuplicate)
+                    {
+                        MessageBox.Show("A site with the same name already exists.",
+                            "Duplicate Site", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    SiteList[SiteList.IndexOf(originalItem)] = newSiteInfo;
                     DatabaseHelper.SaveSites(SiteList);
+
+                    ApplyFilter();
                     UpdateStatusBar();
                 }
             }
