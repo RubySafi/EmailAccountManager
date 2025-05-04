@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Controls.Primitives;
+using System.Diagnostics.Eventing.Reader;
 
 namespace EmailAccountManager
 {
@@ -27,6 +28,7 @@ namespace EmailAccountManager
 
         public string CurrentUserName = "administrator";
 
+        bool skipDataBase = false;
 
         public MainWindow()
         {
@@ -39,7 +41,9 @@ namespace EmailAccountManager
 
             if (result == false)
             {
+                skipDataBase = true;
                 this.Close();
+               
             }
 
             CurrentUserName = loginWindow.CurrentUser;
@@ -89,10 +93,14 @@ namespace EmailAccountManager
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             base.OnClosing(e);
-            DatabaseHelper.SaveSites(SiteList);
 
             appSetting.IsAutoLogin = AutoLoginCheckBox.IsChecked ?? false;
             AppSetting.Save(appSetting);
+
+            if (!skipDataBase)
+            {
+                DatabaseHelper.SaveSites(SiteList);
+            }
         }
 
         private void SetDebugData()
@@ -131,7 +139,7 @@ namespace EmailAccountManager
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // プレースホルダーの表示切り替え
+
             PlaceholderLabel.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
