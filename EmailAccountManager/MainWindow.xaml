@@ -44,11 +44,20 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Filter: " VerticalAlignment="Center" Margin="0,0,4,0" Grid.Column="0" HorizontalAlignment="Left"/>
+            <CheckBox x:Name="UseFilterCheckBox"
+              Content="Use filter" Margin="0,0,4,0" VerticalAlignment="Center" Checked="UseFilterCheckBox_Checked" Unchecked="UseFilterCheckBox_Unchecked"/>
 
-            <TextBox x:Name="SearchTextBox" Margin="0,0,10,0" Grid.Column="1" HorizontalAlignment="Stretch"
+
+            <!--<TextBox x:Name="SearchTextBox" Margin="0,0,10,0" Grid.Column="1" HorizontalAlignment="Stretch"
              Text="Enter email address to filter..." Foreground="Gray" GotFocus="SearchTextBox_GotFocus"
-             LostFocus="SearchTextBox_LostFocus" TextChanged="SearchTextBox_TextChanged"  />
+             LostFocus="SearchTextBox_LostFocus" TextChanged="SearchTextBox_TextChanged"  />-->
+            <TextBox x:Name="SearchTextBox" Margin="0,0,10,0" Grid.Column="1" VerticalAlignment="Center" TextChanged="SearchTextBox_TextChanged" 
+                     HorizontalAlignment="Stretch" Background="Transparent" />
+                
+
+                <Label Content="Enter email address to filter..." Grid.Column="1"
+                   x:Name="PlaceholderLabel" Foreground="Gray" Margin="4,0,0,0" VerticalAlignment="Center"
+                   IsHitTestVisible="False" Background="Transparent" Padding="0" Visibility="Visible" />
 
             <TextBlock Text="Right-click to add, delete, or edit." VerticalAlignment="Center"
                Grid.Column="2" Margin="0,0,4,0"/>

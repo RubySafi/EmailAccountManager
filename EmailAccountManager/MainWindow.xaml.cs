@@ -74,27 +74,36 @@ namespace EmailAccountManager
             };
         }
 
-        private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (SearchTextBox.Text == "Enter email address to filter...")
-            {
-                SearchTextBox.Text = "";
-                SearchTextBox.Foreground = Brushes.Black;
-            }
-        }
-
-        private void SearchTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(SearchTextBox.Text))
-            {
-                SearchTextBox.Text = "Enter email address to filter...";
-                SearchTextBox.Foreground = Brushes.Gray;
-            }
-        }
-
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = SearchTextBox.Text.Trim();
+            // プレースホルダーの表示切り替え
+            PlaceholderLabel.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            if (UseFilterCheckBox.IsChecked == true)
+            {
+                ApplyFilter();
+            }
+        }
+
+        private void UseFilterCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            ApplyFilter();
+        }
+
+        private void UseFilterCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            FilteredSiteList.Clear();
+            foreach (var site in SiteList)
+            {
+                FilteredSiteList.Add(site);
+            }
+        }
+
+        private void ApplyFilter()
+        {
+            string searchString = SearchTextBox.Text?.Trim() ?? "";
 
             FilteredSiteList.Clear();
 
