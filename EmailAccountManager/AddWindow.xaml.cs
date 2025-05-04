@@ -16,9 +16,9 @@ using System.Windows.Shapes;
 namespace EmailAccountManager
 {
     /// <summary>
-    /// EditWindow.xaml
+    /// AddWindow.xaml
     /// </summary>
-    public partial class EditWindow : Window
+    public partial class AddWindow : Window
     {
         // To store the email addresses
         public ObservableCollection<MailElm> EmailList { get; set; }
@@ -27,17 +27,12 @@ namespace EmailAccountManager
 
         public SecurityLevel SelectedSecurityLevel { get; set; }
 
-        public EditWindow(SiteInfo info)
+        public AddWindow()
         {
             InitializeComponent();
 
-            this.siteInfo = info;
-            EmailList = new ObservableCollection<MailElm>(info.EmailList);
+            EmailList = new ObservableCollection<MailElm>();
             EmailDataGrid.ItemsSource = EmailList;
-
-            SiteNameTextBox.Text = info.SiteName;
-            EmailCommentTextBox.Text = info.Comment;
-            
 
             siteInfo = new SiteInfo();
         }
@@ -67,7 +62,8 @@ namespace EmailAccountManager
             }
         }
 
-        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        // Handle OK button click (to save the site info)
+        private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             string siteName = SiteNameTextBox.Text;
             SelectedSecurityLevel = (SecurityLevel)SecurityLevelComboBox.SelectedItem;
@@ -78,13 +74,14 @@ namespace EmailAccountManager
 
             siteInfo.EmailList = EmailList.ToList();
 
-            this.DialogResult = true;
+            this.DialogResult = true; // Close the window and indicate success
             this.Close();
         }
 
+        // Handle Cancel button click
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
+            this.DialogResult = false; // Close the window and indicate cancellation
             this.Close();
         }
 
@@ -96,12 +93,9 @@ namespace EmailAccountManager
         {
             SecurityLevelComboBox.ItemsSource = Enum.GetValues(typeof(SecurityLevel)).Cast<SecurityLevel>();
 
-            SecurityLevelComboBox.SelectedIndex = siteInfo.SecurityLevel switch
-            {
-                SecurityLevel.None => 0,
-                SecurityLevel.General => 1,
-                SecurityLevel.Finance => 2,
-            };
+            SecurityLevelComboBox.SelectedIndex = 0;
         }
+
+
     }
 }

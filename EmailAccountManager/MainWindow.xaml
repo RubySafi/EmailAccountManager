@@ -6,13 +6,38 @@
         xmlns:local="clr-namespace:EmailAccountManager"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+
+    <Window.Resources>
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#CCE0F7FF"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="DataGridCell">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#CCE0F7FF"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>  <!-- Search  -->
-            <RowDefinition Height="*"/>     <!-- Display all -->
-            <RowDefinition Height="Auto"/>  <!-- Button -->
+            <RowDefinition Height="Auto"/>            <!-- Search  -->
+            <RowDefinition Height="*"/>            <!-- Display all -->
+            <RowDefinition Height="10"/>            <!-- Button -->
+            <RowDefinition Height="Auto"/>            <!-- Button -->
         </Grid.RowDefinitions>
-        
+
         <!-- Search Box -->
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
             <TextBox x:Name="SearchTextBox" Width="300" Margin="0,0,10,0"
@@ -22,22 +47,27 @@
                      LostFocus="SearchTextBox_LostFocus"/>
         </StackPanel>
 
-        <ListView x:Name="SiteListView"
-                  Grid.Row="1"
-                  Margin="10"
-                  SelectionMode="Single">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Site Name" DisplayMemberBinding="{Binding SiteName}" Width="200"/>
-                    <GridViewColumn Header="Email Address" DisplayMemberBinding="{Binding Email}" Width="250"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        
+        <!-- DataGrid with site information -->
+        <DataGrid x:Name="SiteDataGrid" Grid.Row="1" Margin="0" SelectionMode="Single" AutoGenerateColumns="False"
+                  HeadersVisibility="Column" GridLinesVisibility="All"  CanUserResizeColumns="True" CanUserSortColumns="True"
+                  HorizontalScrollBarVisibility="Auto"
+                  IsReadOnly="True" ItemsSource="{Binding SiteList}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding SiteName}" Width="120"/>
+                <DataGridTextColumn Header="Security" Binding="{Binding SecurityLevel}" Width="100"/>
+                <DataGridTextColumn Header="Email Addresses" Binding="{Binding AllEmails}" Width="200"/>
+                <DataGridTextColumn Header="Comment" Binding="{Binding Comment}" Width="200"/>
+                <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp, StringFormat=\{0:yyyy/MM/dd\}}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+
+
         <!-- Buttons for edit and add -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="EditButton" Content="Edit" Width="100" Margin="0,0,10,0"/>
-            <Button x:Name="AddButton" Content="Add New" Width="100"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="DeleteButton" Content="Delete" Width="100" Margin="0,0,10,0" Click="DeleteButton_Click"/>
+            <Button x:Name="EditButton" Content="Edit" Width="100" Margin="0,0,10,0" Click="EditButton_Click"/>
+            <Button x:Name="AddButton" Content="Add New" Width="100"  Click="AddButton_Click"/>
         </StackPanel>
     </Grid>
 </Window>
