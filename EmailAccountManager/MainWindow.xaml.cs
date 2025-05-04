@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace EmailAccountManager
 {
@@ -21,15 +22,27 @@ namespace EmailAccountManager
         public ObservableCollection<SiteInfo> SiteList { get; set; } = new ObservableCollection<SiteInfo>();
         public ObservableCollection<SiteInfo> FilteredSiteList { get; set; } = new ObservableCollection<SiteInfo>();
 
+        public string CurrentUserName = "administrator";
 
         public MainWindow()
         {
             InitializeComponent();
-            DatabaseHelper.SetDatabasePath("administrator.db");
+
+
+            string userDatabaseFolder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "db");
+            if (!Directory.Exists(userDatabaseFolder))
+            {
+                Directory.CreateDirectory(userDatabaseFolder);
+            }
+
+            string databasePath = System.IO.Path.Combine(userDatabaseFolder, $"{CurrentUserName}.db");
+
+            DatabaseHelper.SetDatabasePath(databasePath);
             DatabaseHelper.InitializeDatabase();
 
             SiteList = DatabaseHelper.LoadSites();
             FilteredSiteList = new ObservableCollection<SiteInfo>(SiteList);
+            UpdateStatusBar();
 
             this.DataContext = this;
         }
@@ -114,6 +127,7 @@ namespace EmailAccountManager
                     FilteredSiteList.Add(site);
                 }
             }
+            UpdateStatusBar();
         }
 
 
@@ -127,6 +141,7 @@ namespace EmailAccountManager
                 var newSiteInfo = addWindow.GetNewSite();
                 SiteList.Add(newSiteInfo);
                 DatabaseHelper.SaveSites(SiteList);
+                UpdateStatusBar();
             }
         }
         private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -152,6 +167,7 @@ namespace EmailAccountManager
                     SiteList.Remove((SiteInfo)SiteDataGrid.SelectedItem);
                     SiteDataGrid.SelectedItem = null;
                     DatabaseHelper.SaveSites(SiteList);
+                    UpdateStatusBar();
                 }
             }
         }
@@ -171,9 +187,18 @@ namespace EmailAccountManager
                     var newSiteInfo = editWindow.GetNewSite();
                     SiteList[SiteList.IndexOf(item)] = newSiteInfo;
                     DatabaseHelper.SaveSites(SiteList);
+                    UpdateStatusBar();
                 }
             }
         }
+
+        private void UpdateStatusBar()
+        {
+            StatusUserTextBlock.Text = $"User: {CurrentUserName}";
+            StatusTotalCountTextBlock.Text = $"Total: {SiteList.Count}";
+            StatusFilteredCountTextBlock.Text = $"Filtered: {FilteredSiteList.Count}";
+        }
+
 
     }
 }

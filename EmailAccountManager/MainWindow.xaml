@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EmailAccountManager"
-        mc:Ignorable="d"
+        mc:Ignorable="d" Background="#F5F5F5"
         Title="Account Manager" Height="450" Width="800" ResizeMode="CanMinimize">
 
     <Window.Resources>
@@ -28,12 +28,17 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="StatusBarItemStyle" TargetType="StatusBarItem">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Margin" Value="0,0,0,0" />
+        </Style>
     </Window.Resources>
 
-    <Grid Margin="5">
+    <Grid Margin="0,5,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>            <!-- Search  -->
             <RowDefinition Height="*"/>            <!-- Display all -->
+            <RowDefinition Height="Auto"/>  <!-- Status bar -->
         </Grid.RowDefinitions>
 
         <!-- Search Box -->
@@ -45,12 +50,9 @@
             </Grid.ColumnDefinitions>
 
             <CheckBox x:Name="UseFilterCheckBox"
-              Content="Use filter" Margin="0,0,4,0" VerticalAlignment="Center" Checked="UseFilterCheckBox_Checked" Unchecked="UseFilterCheckBox_Unchecked"/>
+              Content="Use Filter" Margin="5,0,4,0" VerticalAlignment="Center" Checked="UseFilterCheckBox_Checked" Unchecked="UseFilterCheckBox_Unchecked"/>
 
 
-            <!--<TextBox x:Name="SearchTextBox" Margin="0,0,10,0" Grid.Column="1" HorizontalAlignment="Stretch"
-             Text="Enter email address to filter..." Foreground="Gray" GotFocus="SearchTextBox_GotFocus"
-             LostFocus="SearchTextBox_LostFocus" TextChanged="SearchTextBox_TextChanged"  />-->
             <TextBox x:Name="SearchTextBox" Margin="0,0,10,0" Grid.Column="1" VerticalAlignment="Center" TextChanged="SearchTextBox_TextChanged" 
                      HorizontalAlignment="Stretch" Background="Transparent" />
                 
@@ -60,12 +62,12 @@
                    IsHitTestVisible="False" Background="Transparent" Padding="0" Visibility="Visible" />
 
             <TextBlock Text="Right-click to add, delete, or edit." VerticalAlignment="Center"
-               Grid.Column="2" Margin="0,0,4,0"/>
+               Grid.Column="2" Margin="0,0,5,0"/>
         </Grid>
 
 
         <!-- DataGrid with site information -->
-        <DataGrid x:Name="SiteDataGrid" Grid.Row="1" Margin="0" SelectionMode="Single" AutoGenerateColumns="False"
+        <DataGrid x:Name="SiteDataGrid" Grid.Row="1" Margin="5,0,5,0" SelectionMode="Single" AutoGenerateColumns="False"
                   HeadersVisibility="Column" GridLinesVisibility="All"  CanUserResizeColumns="True" CanUserSortColumns="True"
                   HorizontalScrollBarVisibility="Auto"
                   IsReadOnly="True" ItemsSource="{Binding FilteredSiteList}">
@@ -86,5 +88,19 @@
             </DataGrid.Columns>
         </DataGrid>
 
+        <StatusBar Grid.Row="2" VerticalAlignment="Bottom" Height="Auto" BorderBrush="Gray" BorderThickness="0,1,0,0">
+            <StatusBarItem Style="{StaticResource StatusBarItemStyle}">
+                <TextBlock x:Name="StatusUserTextBlock" Text="User: administrator" />
+            </StatusBarItem>
+            <Separator VerticalAlignment="Stretch" />
+            <StatusBarItem Style="{StaticResource StatusBarItemStyle}">
+                <TextBlock x:Name="StatusTotalCountTextBlock" Text="Total: 0" />
+            </StatusBarItem>
+            <Separator VerticalAlignment="Stretch" />
+            <StatusBarItem Style="{StaticResource StatusBarItemStyle}">
+                <TextBlock x:Name="StatusFilteredCountTextBlock" Text="Filtered: 0" />
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
+
 </Window>
