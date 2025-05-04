@@ -23,12 +23,27 @@ namespace EmailAccountManager
         public ObservableCollection<SiteInfo> SiteList { get; set; } = new ObservableCollection<SiteInfo>();
         public ObservableCollection<SiteInfo> FilteredSiteList { get; set; } = new ObservableCollection<SiteInfo>();
 
+        AppSetting appSetting;
+
         public string CurrentUserName = "administrator";
 
 
         public MainWindow()
         {
             InitializeComponent();
+
+            appSetting = AppSetting.Load();
+
+            LoginWindow loginWindow = new LoginWindow(appSetting);
+            bool? result = loginWindow.ShowDialog();
+
+            if (result == false)
+            {
+                this.Close();
+            }
+
+            CurrentUserName = loginWindow.CurrentUser;
+
 
             this.PreviewKeyDown += MainWindow_PreviewKeyDown;
 
@@ -73,6 +88,9 @@ namespace EmailAccountManager
         {
             base.OnClosing(e);
             DatabaseHelper.SaveSites(SiteList);
+
+            appSetting.IsAutoLogin = AutoLoginCheckBox.IsChecked ?? false;
+            AppSetting.Save(appSetting);
         }
 
         private void SetDebugData()
