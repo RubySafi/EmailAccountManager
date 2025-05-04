@@ -18,14 +18,30 @@ namespace EmailAccountManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        //public List<SiteInfo> SiteList { get; set; }
         public ObservableCollection<SiteInfo> SiteList { get; set; } = new ObservableCollection<SiteInfo>();
+        public ObservableCollection<SiteInfo> FilteredSiteList { get; set; } = new ObservableCollection<SiteInfo>();
 
 
-    public MainWindow()
+        public MainWindow()
         {
             InitializeComponent();
+            DatabaseHelper.SetDatabasePath("administrator.db");
+            DatabaseHelper.InitializeDatabase();
 
+            SiteList = DatabaseHelper.LoadSites();
+            FilteredSiteList = new ObservableCollection<SiteInfo>(SiteList);
+
+            this.DataContext = this;
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            DatabaseHelper.SaveSites(SiteList);
+        }
+
+        private void SetDebugData()
+        {
             //SiteList = new List<SiteInfo>
             SiteList = new ObservableCollection<SiteInfo>()
             {
@@ -56,10 +72,6 @@ namespace EmailAccountManager
                     }
                 }
             };
-
-            this.DataContext = this;
-
-
         }
 
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -80,7 +92,23 @@ namespace EmailAccountManager
             }
         }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchString = SearchTextBox.Text.Trim();
+
+            FilteredSiteList.Clear();
+
+            foreach (var site in SiteList)
+            {
+                if (string.IsNullOrWhiteSpace(searchString) || site.IsDisplay(searchString))
+                {
+                    FilteredSiteList.Add(site);
+                }
+            }
+        }
+
+
+        private void AddMenuItem_Click(object sender, RoutedEventArgs e)
         {
             AddWindow addWindow = new AddWindow();
             bool? result = addWindow.ShowDialog(); 
@@ -89,9 +117,10 @@ namespace EmailAccountManager
             {
                 var newSiteInfo = addWindow.GetNewSite();
                 SiteList.Add(newSiteInfo);
+                DatabaseHelper.SaveSites(SiteList);
             }
         }
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (SiteDataGrid.SelectedItem != null)
             {
@@ -113,11 +142,12 @@ namespace EmailAccountManager
                 {
                     SiteList.Remove((SiteInfo)SiteDataGrid.SelectedItem);
                     SiteDataGrid.SelectedItem = null;
+                    DatabaseHelper.SaveSites(SiteList);
                 }
             }
         }
 
-        private void EditButton_Click(object sender, RoutedEventArgs e)
+        private void EditMenuItem_Click(object sender, RoutedEventArgs e)
         {
 
             if (SiteDataGrid.SelectedItem != null)
@@ -131,6 +161,7 @@ namespace EmailAccountManager
                 {
                     var newSiteInfo = editWindow.GetNewSite();
                     SiteList[SiteList.IndexOf(item)] = newSiteInfo;
+                    DatabaseHelper.SaveSites(SiteList);
                 }
             }
         }

@@ -32,5 +32,17 @@ namespace EmailAccountManager
             Comment = site.Comment;
         }
 
+        public bool IsDisplay(string searchString)
+        {
+            foreach (var email in EmailList)
+            {
+                if (email.Address.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 }

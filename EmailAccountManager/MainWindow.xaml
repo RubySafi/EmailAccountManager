@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EmailAccountManager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Account Manager" Height="450" Width="800" ResizeMode="CanMinimize">
 
     <Window.Resources>
         <Style TargetType="DataGridRow">
@@ -30,28 +30,44 @@
         </Style>
     </Window.Resources>
 
-    <Grid Margin="10">
+    <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>            <!-- Search  -->
             <RowDefinition Height="*"/>            <!-- Display all -->
-            <RowDefinition Height="10"/>            <!-- Button -->
-            <RowDefinition Height="Auto"/>            <!-- Button -->
         </Grid.RowDefinitions>
 
         <!-- Search Box -->
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
-            <TextBox x:Name="SearchTextBox" Width="300" Margin="0,0,10,0"
-                     Text ="Enter email address to filter..."
-                     Foreground="Gray"
-                     GotFocus="SearchTextBox_GotFocus"
-                     LostFocus="SearchTextBox_LostFocus"/>
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Filter: " VerticalAlignment="Center" Margin="0,0,4,0" Grid.Column="0" HorizontalAlignment="Left"/>
+
+            <TextBox x:Name="SearchTextBox" Margin="0,0,10,0" Grid.Column="1" HorizontalAlignment="Stretch"
+             Text="Enter email address to filter..." Foreground="Gray" GotFocus="SearchTextBox_GotFocus"
+             LostFocus="SearchTextBox_LostFocus" TextChanged="SearchTextBox_TextChanged"  />
+
+            <TextBlock Text="Right-click to add, delete, or edit." VerticalAlignment="Center"
+               Grid.Column="2" Margin="0,0,4,0"/>
+        </Grid>
+
 
         <!-- DataGrid with site information -->
         <DataGrid x:Name="SiteDataGrid" Grid.Row="1" Margin="0" SelectionMode="Single" AutoGenerateColumns="False"
                   HeadersVisibility="Column" GridLinesVisibility="All"  CanUserResizeColumns="True" CanUserSortColumns="True"
                   HorizontalScrollBarVisibility="Auto"
-                  IsReadOnly="True" ItemsSource="{Binding SiteList}">
+                  IsReadOnly="True" ItemsSource="{Binding FilteredSiteList}">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add New" Click="AddMenuItem_Click"/>
+                    <MenuItem Header="Edit" Click="EditMenuItem_Click"/>
+                    <Separator/>
+                    <MenuItem Header="Delete" Click="DeleteMenuItem_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding SiteName}" Width="120"/>
                 <DataGridTextColumn Header="Security" Binding="{Binding SecurityLevel}" Width="100"/>
@@ -61,13 +77,5 @@
             </DataGrid.Columns>
         </DataGrid>
 
-
-
-        <!-- Buttons for edit and add -->
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="DeleteButton" Content="Delete" Width="100" Margin="0,0,10,0" Click="DeleteButton_Click"/>
-            <Button x:Name="EditButton" Content="Edit" Width="100" Margin="0,0,10,0" Click="EditButton_Click"/>
-            <Button x:Name="AddButton" Content="Add New" Width="100"  Click="AddButton_Click"/>
-        </StackPanel>
     </Grid>
 </Window>

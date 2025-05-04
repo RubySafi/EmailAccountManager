@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EmailAccountManager"
         mc:Ignorable="d"
-        Title="EditWindow" Height="450" Width="800">
+        Title="EditWindow" Height="300" Width="600" ResizeMode="NoResize" WindowStyle="ToolWindow">
     <Grid Margin="5,5,5,5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="79*"/>
@@ -74,7 +74,7 @@
 
             <!-- Email List -->
             <DataGrid x:Name="EmailDataGrid"
-                      Grid.Row="2" Height="90" Margin="0" AutoGenerateColumns="False"
+                      Grid.Row="2" Margin="0" AutoGenerateColumns="False"
                       CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"
                       HeadersVisibility="Column" ItemsSource="{Binding EmailList}" GridLinesVisibility="All"
                       BorderBrush="Gray" BorderThickness="1">
@@ -92,7 +92,7 @@
         <!-- Buttons -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0" Grid.Column="1">
             <Button Content="Update" Click="UpdateButton_Click" Width="80" Height="25" Margin="0,0,10,0"/>
-            <Button Content="Cancel" Click="CancelButton_Click" Width="80" Height="25" Margin="0,0,10,0"/>
+            <Button Content="Cancel" Click="CancelButton_Click" Width="80" Height="25"/>
         </StackPanel>
 
     </Grid>
