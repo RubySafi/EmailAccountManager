@@ -47,21 +47,11 @@ namespace EmailAccountManager
 
 
 
-            SetDebugValue();
 
             LoadAccountList();
             SetLastLoginUser();
         }
 
-        private void SetDebugValue()
-        {
-            appSetting.UserNames = new List<string>()
-            {
-                "user1", "user2", "user3"
-            };
-            appSetting.DefaultUser = "user1";
-            appSetting.IsAutoLogin = false;
-        }
         private void LoadAccountList()
         {
             AccountListBox.ItemsSource = appSetting.UserNames;
@@ -78,6 +68,13 @@ namespace EmailAccountManager
         private void CreateAccountButton_Click(object sender, RoutedEventArgs e)
         {
 
+            RegisterAccountWindow registerAccountWindow = new RegisterAccountWindow(appSetting);
+            bool? result = registerAccountWindow.ShowDialog();
+
+            if (result == true)
+            {
+                SetLastLoginUser();
+            }
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)

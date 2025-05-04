@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 
 namespace EmailAccountManager
 {
     public class AppSetting
     {
-        public List<string> UserNames { get; set; }
+        public ObservableCollection<string> UserNames { get; set; } = new ObservableCollection<string>();
         public bool IsAutoLogin { get; set; }
         public string DefaultUser { get; set; }
 
@@ -43,7 +44,7 @@ namespace EmailAccountManager
                 {
                     return new AppSetting
                     {
-                        UserNames = new List<string>(),
+                        UserNames = new ObservableCollection<string>(),
                         IsAutoLogin = false,
                         DefaultUser = string.Empty
                     };
