@@ -29,27 +29,9 @@ namespace EmailAccountManager
             InitializeComponent();
 
             this.appSetting = appSetting;
-            if (appSetting.IsAutoLogin)
-            {
-                string defaultUser = appSetting.DefaultUser;
-                if (appSetting.UserNames.Contains(defaultUser))
-                {
-                    CurrentUser = defaultUser;
-                    this.DialogResult = true;
-                    return;
-                }
-                else
-                {
-                    Logger.LogError("The default user cannot be found.");
-                    appSetting.DefaultUser = "";
-                    MessageBox.Show("The default user could not be found. Please select a valid user.",
-                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
 
 
             this.PreviewKeyDown += LoginWindow_PreviewKeyDown;
-
 
 
             LoadAccountList();

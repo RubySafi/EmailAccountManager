@@ -26,7 +26,7 @@ namespace EmailAccountManager
 
         AppSetting appSetting;
 
-        public string CurrentUserName = "administrator";
+        public string CurrentUserName;
 
         bool skipDataBase = false;
 
@@ -35,21 +35,31 @@ namespace EmailAccountManager
             InitializeComponent();
 
             appSetting = AppSetting.Load();
+            AutoLoginCheckBox.IsChecked = appSetting.IsAutoLogin;
 
-            LoginWindow loginWindow = new LoginWindow(appSetting);
-            bool? result = loginWindow.ShowDialog();
-
-            if (result == false)
+            if (!TryLogin())
             {
                 skipDataBase = true;
                 this.Close();
-               
+                return;
             }
 
-            CurrentUserName = loginWindow.CurrentUser;
+
+
+            InitializeDatabaseForUser();
 
 
             this.PreviewKeyDown += MainWindow_PreviewKeyDown;
+
+            UpdateStatusBar();
+
+            this.DataContext = this;
+
+            this.Title = $"Account Manager {AsmUtility.GetAssemblyVersion()}";
+        }
+
+        public void InitializeDatabaseForUser()
+        {
 
             string userDatabaseFolder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "db");
             if (!Directory.Exists(userDatabaseFolder))
@@ -64,11 +74,45 @@ namespace EmailAccountManager
 
             SiteList = DatabaseHelper.LoadSites();
             FilteredSiteList = new ObservableCollection<SiteInfo>(SiteList);
-            UpdateStatusBar();
+        }
 
-            this.DataContext = this;
+        public bool TryLogin()
+        {
 
-            this.Title = $"Account Manager {AsmUtility.GetAssemblyVersion()}";
+            if (appSetting.CanAutoLogin)
+            {
+                CurrentUserName = appSetting.DefaultUser;
+                return true;
+            }
+
+            if (appSetting.IsAutoLogin)
+            {
+                string defaultUser = appSetting.DefaultUser;
+                if (!appSetting.UserNames.Contains(defaultUser))
+                {
+                    Logger.LogError($"The default user cannot be found. {defaultUser}");
+                    appSetting.DefaultUser = "";
+                    MessageBox.Show($"The default user [{defaultUser}] could not be found. Please select a valid user.",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+            LoginWindow loginWindow = new LoginWindow(appSetting);
+            bool? result = loginWindow.ShowDialog();
+            if (result == true)
+            {
+                CurrentUserName = loginWindow.CurrentUser;
+                return true;
+            }
+
+            if (string.IsNullOrWhiteSpace(CurrentUserName))
+            {
+                Logger.LogError($"Login user is not set.");
+                MessageBox.Show("Login user is not set. The application will now close. Please restart it later.", "Application Exit");
+                Application.Current.Shutdown();
+            }
+
+            return false;
         }
 
         private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -92,6 +136,7 @@ namespace EmailAccountManager
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
+
             base.OnClosing(e);
 
             appSetting.IsAutoLogin = AutoLoginCheckBox.IsChecked ?? false;

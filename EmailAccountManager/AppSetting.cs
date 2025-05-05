@@ -15,6 +15,7 @@ namespace EmailAccountManager
         public bool IsAutoLogin { get; set; }
         public string DefaultUser { get; set; }
 
+        public bool CanAutoLogin => IsAutoLogin && UserNames.Contains(DefaultUser);
 
         private static readonly string SettingsFilePath = "appsettings.json";
 
