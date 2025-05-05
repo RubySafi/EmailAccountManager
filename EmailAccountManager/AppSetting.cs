@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using Newtonsoft.Json.Linq;
 
 namespace EmailAccountManager
 {
     public class AppSetting
     {
-        public int Version { get; set; } = 1;
+        public int Version { get; set; } = AsmUtility.AppSettingVersion;
         public ObservableCollection<string> UserNames { get; set; } = new ObservableCollection<string>();
         public bool IsAutoLogin { get; set; }
         public string DefaultUser { get; set; }
@@ -35,28 +36,50 @@ namespace EmailAccountManager
 
         public static AppSetting Load()
         {
+            int version = 0;
             try
             {
-                if (File.Exists(SettingsFilePath))
+                if (!File.Exists(SettingsFilePath))
                 {
-                    string json = File.ReadAllText(SettingsFilePath);
+                    return CreateDefault();
+                }
+
+                string json = File.ReadAllText(SettingsFilePath);
+
+                var jObject = JObject.Parse(json);
+                version = jObject["Version"]?.Value<int>() ?? 1;
+
+
+                if (version == AsmUtility.AppSettingVersion)
+                {
                     return JsonConvert.DeserializeObject<AppSetting>(json);
                 }
                 else
                 {
-                    return new AppSetting
+                    switch (version)
                     {
-                        UserNames = new ObservableCollection<string>(),
-                        IsAutoLogin = false,
-                        DefaultUser = string.Empty
-                    };
+                        default:
+                            Logger.LogError($"Unsupported AppSetting version: {version}");
+                            return CreateDefault();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError("Failed to load appSetting file", ex);
+                Logger.LogError($"Failed to load appSetting file. AppSetting version: {version}", ex);
                 return null;
             }
+        }
+
+        public static AppSetting CreateDefault()
+        {
+            return new AppSetting
+            {
+                Version = AsmUtility.AppSettingVersion,
+                UserNames = new ObservableCollection<string>(),
+                IsAutoLogin = false,
+                DefaultUser = string.Empty
+            };
         }
     }
 }

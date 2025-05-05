@@ -14,7 +14,7 @@ namespace EmailAccountManager
         public const int MinorVersion = 9;
 
         public const int dbVersion = 1;
-        public const int AppSettingVersion = 0;
+        public const int AppSettingVersion = 1;
 
         public static int GetDataBaseVersion()
         {
