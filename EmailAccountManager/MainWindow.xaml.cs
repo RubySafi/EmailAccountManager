@@ -44,6 +44,13 @@ namespace EmailAccountManager
                 return;
             }
 
+            if (string.IsNullOrWhiteSpace(CurrentUserName))
+            {
+                Logger.LogError($"Login user is not set.");
+                MessageBox.Show("Login user is not set. The application will now close. Please restart it later.", "Application Exit");
+                Application.Current.Shutdown();
+            }
+
 
 
             InitializeDatabaseForUser();
@@ -103,13 +110,6 @@ namespace EmailAccountManager
             {
                 CurrentUserName = loginWindow.CurrentUser;
                 return true;
-            }
-
-            if (string.IsNullOrWhiteSpace(CurrentUserName))
-            {
-                Logger.LogError($"Login user is not set.");
-                MessageBox.Show("Login user is not set. The application will now close. Please restart it later.", "Application Exit");
-                Application.Current.Shutdown();
             }
 
             return false;
