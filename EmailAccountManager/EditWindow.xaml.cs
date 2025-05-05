@@ -37,9 +37,8 @@ namespace EmailAccountManager
 
             SiteNameTextBox.Text = info.SiteName;
             SiteCommentTextBox.Text = info.Comment;
-            
 
-            siteInfo = new SiteInfo();
+
         }
 
         // Add email to the list
