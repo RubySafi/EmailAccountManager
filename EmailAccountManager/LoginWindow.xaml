@@ -31,7 +31,8 @@
             <TextBlock Text="Select account" FontWeight="Bold"
                VerticalAlignment="Center" Margin="0,0,0,0" DockPanel.Dock="Left"/>
             <Button Content="+ New" Click="CreateAccountButton_Click" ToolTip="Create new account"
-            HorizontalAlignment="Right" DockPanel.Dock="Right" Padding="3,1,3,1"/>
+                    HorizontalAlignment="Right" DockPanel.Dock="Right" Padding="3,1,3,1"
+                    KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown"/>
         </DockPanel>
 
         <!-- Account List -->
@@ -45,9 +46,9 @@
                     HorizontalAlignment="Right"
                     Margin="0,5,0,0">
             <Button Content="Login" Width="70" Margin="0,0,5,0"
-                    Click="LoginButton_Click" IsDefault="True"/>
+                    Click="LoginButton_Click" IsDefault="True" KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown"/>
             <Button Content="Cancel" Width="70"
-                    Click="CancelButton_Click" IsCancel="True"/>
+                    Click="CancelButton_Click" IsCancel="True" KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown"/>
         </StackPanel>
     </Grid>
 

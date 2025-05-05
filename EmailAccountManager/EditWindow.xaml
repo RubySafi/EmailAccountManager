@@ -15,7 +15,9 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/><!-- site comment -->
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -37,64 +39,82 @@
                      Loaded="SecurityLevelComboBox_Loaded"/>
         </Grid>
 
+        <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Site Comment:" VerticalAlignment="Top" Margin="0,4,4,0" Grid.RowSpan="2"/>
+            <TextBox x:Name="SiteCommentTextBox" Grid.Column="1" Height="23" VerticalAlignment="Top" Grid.RowSpan="2"/>
+        </Grid>
+
         <!-- Email Section -->
-        <Grid Grid.Row="1" Grid.ColumnSpan="2">
+        <Grid Grid.Row="2" Grid.ColumnSpan="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <!-- Email address input -->
-            <Grid Grid.Row="0" Margin="0,0,0,5">
+            <Grid Grid.Row="1" Margin="0,0,0,5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="6*"/>
                     <RowDefinition Height="17*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Mail Address:" VerticalAlignment="Top" Margin="0,4,4,0" Grid.RowSpan="2"/>
+                <TextBlock Grid.Column="0" Text="Email Address:" VerticalAlignment="Top" Margin="0,4,4,0" Grid.RowSpan="2"/>
                 <TextBox x:Name="EmailInputTextBox" Grid.Column="1" Height="23" VerticalAlignment="Top" Grid.RowSpan="2"/>
             </Grid>
 
             <!-- Email comment + buttons -->
-            <Grid Grid.Row="1" Margin="0,0,0,5">
+            <Grid Grid.Row="2" Margin="0,0,0,5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="Comment:" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBlock Grid.Column="0" Text="Email Comment:" VerticalAlignment="Center" Margin="0,0,0,0"/>
                 <TextBox x:Name="EmailCommentTextBox" Grid.Column="1" Height="23" VerticalAlignment="Center"/>
-                <Button Grid.Column="2" Content="Add Email" Click="AddEmailButton_Click" Width="80" Height="25" Margin="4,0,0,0" HorizontalAlignment="Right"/>
-                <Button Grid.Column="3" Content="Remove Email" Click="RemoveEmailButton_Click" Height="25" Width="90" HorizontalAlignment="Right"/>
+                <Button Grid.Column="2" Content="Add Email" Click="AddEmailButton_Click" Width="80" Height="20" Margin="4,0,0,0" 
+                        HorizontalAlignment="Right" KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown"/>
+                <Button Grid.Column="3" Content="Remove Email" Click="RemoveEmailButton_Click" Height="20" Width="90" 
+                        HorizontalAlignment="Right" KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown"/>
             </Grid>
 
             <!-- Email List -->
-            <DataGrid x:Name="EmailDataGrid"
-                      Grid.Row="2" Margin="0" AutoGenerateColumns="False"
+            <Grid Grid.Row="0" Margin="0,0,0,5">
+                <DataGrid x:Name="EmailDataGrid"
+                      Grid.Row="0" Margin="0" AutoGenerateColumns="False"
                       CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"
                       HeadersVisibility="Column" ItemsSource="{Binding EmailList}" GridLinesVisibility="All"
                       BorderBrush="Gray" BorderThickness="1">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="150"/>
-                    <DataGridTextColumn Header="Comment" Binding="{Binding Comment}" Width="200"/>
-                    <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp, StringFormat={}{0:yyyy-MM-dd}}" Width="130"/>
-                </DataGrid.Columns>
-            </DataGrid>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Email Address" Binding="{Binding Address}" Width="150"/>
+                        <DataGridTextColumn Header="Comment" Binding="{Binding Comment}" Width="200"/>
+                        <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp, StringFormat={}{0:yyyy-MM-dd}}" Width="130"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
 
 
 
         </Grid>
 
+        <Separator Grid.Row="3" Grid.ColumnSpan="2" Margin="0,3,0,3" Height="1" Background="DarkGray"/>
+
         <!-- Buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0" Grid.Column="1">
-            <Button Content="Update" Click="UpdateButton_Click" Width="80" Height="25" Margin="0,0,10,0"/>
-            <Button Content="Cancel" Click="CancelButton_Click" Width="80" Height="25"/>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" 
+                    Margin="0,5,0,0" Grid.Column="1" KeyboardNavigation.DirectionalNavigation="None">
+            <Button Content="Update" Click="UpdateButton_Click" Width="70" Height="20" Margin="0,0,10,0"
+                    KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown"/>
+            <Button Content="Cancel" Click="CancelButton_Click" Width="70" Height="20"
+                    KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown"/>
         </StackPanel>
 
     </Grid>

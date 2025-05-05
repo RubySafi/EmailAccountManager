@@ -74,20 +74,21 @@
 
         <Grid Grid.Row="0" Background="#FFF0F0F0" Height="24">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,0,0">
-                <Button Width="20" Height="20" ToolTip="Add a new item" Click="AddButton_Click">
+                <Button Width="20" Height="20" ToolTip="Add a new item" Click="AddButton_Click" KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown">
                     <Image Source="pack://application:,,,/Resources/add_16dp_1F1F1F.png" Width="16" Height="16"/>
                 </Button>
-                <Button Width="20" Height="20" ToolTip="Edit the selected item" Margin="4,0,0,0" Click="EditButton_Click">
+                <Button Width="20" Height="20" ToolTip="Edit the selected item" Margin="4,0,0,0" Click="EditButton_Click" KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown">
                     <Image Source="pack://application:,,,/Resources/mode_edit_16dp_1F1F1F.png" Width="16" Height="16"/>
                 </Button>
-                <Button Width="20" Height="20" ToolTip="Delete the selected item" Margin="4,0,0,0" Click="DeleteButton_Click">
+                <Button Width="20" Height="20" ToolTip="Delete the selected item" Margin="4,0,0,0" Click="DeleteButton_Click" KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown">
                     <Image Source="pack://application:,,,/Resources/delete_16dp_1F1F1F.png" Width="16" Height="16"/>
                 </Button>
             </StackPanel>
 
             <CheckBox x:Name="AutoLoginCheckBox" Grid.Column="2" FocusVisualStyle="{StaticResource SubtleFocusVisualStyle}" 
                       Content="Auto login" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="0,0,10,0"
-                      ToolTip="When checked, the application will skip the login screen and start directly with this user." />
+                      ToolTip="When checked, the application will skip the login screen and start directly with this user." 
+                       KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown"/>
         </Grid>
 
         <Border Grid.Row="1" Background="Gray" Height="1" />
@@ -103,7 +104,8 @@
             </Grid.ColumnDefinitions>
 
             <CheckBox x:Name="UseFilterCheckBox" Grid.Column="0"
-              Content="Use Filter" Margin="5,5,4,0" VerticalAlignment="Center" Checked="UseFilterCheckBox_Checked" Unchecked="UseFilterCheckBox_Unchecked"/>
+              Content="Use Filter" Margin="5,5,4,0" VerticalAlignment="Center" Checked="UseFilterCheckBox_Checked" Unchecked="UseFilterCheckBox_Unchecked"
+                       KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown"/>
 
 
             <TextBox x:Name="SearchTextBox" Grid.Column="1" Margin="0,5,5,0" MinHeight="20"
@@ -129,7 +131,7 @@
                 <DataGridTextColumn Header="Name" Binding="{Binding SiteName}" Width="120"/>
                 <DataGridTextColumn Header="Security" Binding="{Binding SecurityLevel}" Width="100"/>
                 <DataGridTextColumn Header="Email Addresses" Binding="{Binding AllEmails}" Width="200"/>
-                <DataGridTextColumn Header="Comment" Binding="{Binding Comment}" Width="200"/>
+                <DataGridTextColumn Header="Site Comment" Binding="{Binding Comment}" Width="200"/>
                 <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp, StringFormat=\{0:yyyy/MM/dd\}}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>

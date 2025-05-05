@@ -134,6 +134,15 @@ namespace EmailAccountManager
             }
         }
 
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Left || e.Key == Key.Right || e.Key == Key.Up || e.Key == Key.Down)
+            {
+                // Prevent focus movement by arrow keys
+                e.Handled = true;
+            }
+        }
+
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
 

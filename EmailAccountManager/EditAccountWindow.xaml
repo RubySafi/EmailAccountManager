@@ -27,8 +27,8 @@
         <TextBlock Name="ErrorMessageTextBlock" Foreground="Red" Grid.Row="1" Margin="5,0,5,5" VerticalAlignment="Center" />
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
-            <Button Name="UpdateButton" Content="Update" Width="70" Margin="0,0,10,0" Click="UpdateButton_Click" />
-            <Button Name="CancelButton" Content="Cancel" Width="70" Margin="0,0,5,0" Click="CancelButton_Click" />
+            <Button Name="UpdateButton" Content="Update" Width="70" Margin="0,0,10,0" Click="UpdateButton_Click" KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown"/>
+            <Button Name="CancelButton" Content="Cancel" Width="70" Margin="0,0,5,0" Click="CancelButton_Click" KeyboardNavigation.DirectionalNavigation="None" PreviewKeyDown="Window_PreviewKeyDown"/>
         </StackPanel>
     </Grid>
 

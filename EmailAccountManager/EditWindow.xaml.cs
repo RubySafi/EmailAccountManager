@@ -36,7 +36,7 @@ namespace EmailAccountManager
             EmailDataGrid.ItemsSource = EmailList;
 
             SiteNameTextBox.Text = info.SiteName;
-            EmailCommentTextBox.Text = info.Comment;
+            SiteCommentTextBox.Text = info.Comment;
             
 
             siteInfo = new SiteInfo();
@@ -66,6 +66,15 @@ namespace EmailAccountManager
             EmailInputTextBox.Clear();
             EmailCommentTextBox.Clear();
 
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Left || e.Key == Key.Right || e.Key == Key.Up || e.Key == Key.Down)
+            {
+                // Prevent focus movement by arrow keys
+                e.Handled = true;
+            }
         }
 
         // Remove selected email from the list
@@ -104,9 +113,10 @@ namespace EmailAccountManager
 
             SelectedSecurityLevel = (SecurityLevel)SecurityLevelComboBox.SelectedItem;
             siteInfo.Timestamp = DateTime.Now;
-            siteInfo.SiteName = siteName;
+            siteInfo.SiteName = siteName.Trim();
             siteInfo.SecurityLevel = SelectedSecurityLevel;
             siteInfo.EmailList = EmailList.ToList();
+            siteInfo.Comment = SiteCommentTextBox.Text.Trim();
 
             this.DialogResult = true;
             this.Close();

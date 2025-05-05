@@ -97,13 +97,21 @@ namespace EmailAccountManager
 
             var SelectedSecurityLevel = (SecurityLevel)selectedLevel;
             siteInfo.Timestamp = DateTime.Now;
-            siteInfo.SiteName = siteName;
+            siteInfo.SiteName = siteName.Trim();
             siteInfo.SecurityLevel = SelectedSecurityLevel;
-
+            siteInfo.Comment = SiteCommentTextBox.Text.Trim();
             siteInfo.EmailList = EmailList.ToList();
 
             this.DialogResult = true; // Close the window and indicate success
             this.Close();
+        }
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Left || e.Key == Key.Right || e.Key == Key.Up || e.Key == Key.Down)
+            {
+                // Prevent focus movement by arrow keys
+                e.Handled = true;
+            }
         }
 
         // Handle Cancel button click
