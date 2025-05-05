@@ -11,7 +11,7 @@ namespace EmailAccountManager
     public static class AsmUtility
     {
         public const int MeasureVersion = 1;
-        public const int MinorVersion = 6;
+        public const int MinorVersion = 7;
         public static string GetAssemblyDirectoryName()
         {
             string location = Assembly.GetEntryAssembly().Location;
