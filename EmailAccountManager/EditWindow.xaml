@@ -29,6 +29,7 @@
                 <ColumnDefinition Width="90"/>
                 <ColumnDefinition Width="110"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="60"/>
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0" Text="Site Name:" VerticalAlignment="Center" Margin="0,0,4,0"/>
@@ -37,6 +38,29 @@
             <TextBlock Grid.Column="2" Text="Security Level:" VerticalAlignment="Center" Margin="10,0,4,0"/>
             <ComboBox x:Name="SecurityLevelComboBox" Grid.Column="3" Height="23" Width="100" VerticalAlignment="Center"
                      Loaded="SecurityLevelComboBox_Loaded"/>
+            <TextBlock Grid.Column="4" Text="Tag:" VerticalAlignment="Center" Margin="10,0,4,0" HorizontalAlignment="Right"/>
+
+            <Grid Grid.Column="5" Width="60" Height="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="15" />
+                    <!-- width: spin button-->
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="TagNumberTextBox" Grid.Column="0" Text="0"
+                         TextChanged="TagNumberTextBox_TextChanged"/>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <RepeatButton x:Name="PART_IncrementButton" Grid.Row="0" Click="IncrementButton_Click">
+                        <TextBlock Text="▲" FontSize="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </RepeatButton>
+                    <RepeatButton x:Name="PART_DecrementButton" Grid.Row="1" Click="DecrementButton_Click">
+                        <TextBlock Text="▼" FontSize="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </RepeatButton>
+                </Grid>
+            </Grid>
         </Grid>
 
         <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,5">

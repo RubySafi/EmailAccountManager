@@ -11,6 +11,7 @@ namespace EmailAccountManager
 {
     public class AppSetting
     {
+        public int Version { get; set; } = 1;
         public ObservableCollection<string> UserNames { get; set; } = new ObservableCollection<string>();
         public bool IsAutoLogin { get; set; }
         public string DefaultUser { get; set; }

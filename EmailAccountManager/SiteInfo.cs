@@ -18,6 +18,8 @@ namespace EmailAccountManager
         public string Comment { get; set; }
         public DateTime Timestamp { get; set; }
 
+        public int Tag { get; set; }
+
         public string AllEmails => string.Join("\n", EmailList?.Select(e => e.Address) ?? new[] { "None" });
 
 
@@ -30,6 +32,7 @@ namespace EmailAccountManager
             EmailList = new List<MailElm>(site.EmailList);
             Timestamp = site.Timestamp;
             Comment = site.Comment;
+            Tag = site.Tag;
         }
 
         public bool IsDisplay(string searchString)

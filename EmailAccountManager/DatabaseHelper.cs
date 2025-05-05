@@ -14,6 +14,8 @@ namespace EmailAccountManager
     {
         private static string _dbPath = "administrator.db";
 
+        private static int _oldVersion;
+
         public static void SetDatabasePath(string dbPath)
         {
             _dbPath = dbPath;
@@ -33,7 +35,8 @@ namespace EmailAccountManager
                 SiteName TEXT NOT NULL,
                 SecurityLevel INTEGER NOT NULL,
                 Comment TEXT,
-                Timestamp TEXT NOT NULL
+                Timestamp TEXT NOT NULL,
+                Tag INTEGER NOT NULL DEFAULT 0
             );
         ";
             createSiteTableCmd.ExecuteNonQuery();
@@ -61,6 +64,8 @@ namespace EmailAccountManager
                 using var connection = new SqliteConnection($"Data Source={_dbPath}");
                 connection.Open();
 
+
+
                 using var transaction = connection.BeginTransaction();
 
                 var clearMailCmd = connection.CreateCommand();
@@ -76,14 +81,15 @@ namespace EmailAccountManager
                     var insertSiteCmd = connection.CreateCommand();
                     insertSiteCmd.CommandText =
                     @"
-                    INSERT INTO SiteInfo (SiteName, SecurityLevel, Comment, Timestamp)
-                    VALUES ($name, $level, $comment, $timestamp);
+                    INSERT INTO SiteInfo (SiteName, SecurityLevel, Comment, Timestamp, Tag)
+                    VALUES ($name, $level, $comment, $timestamp, $tag);
                     SELECT last_insert_rowid();
         ";
                     insertSiteCmd.Parameters.AddWithValue("$name", site.SiteName);
                     insertSiteCmd.Parameters.AddWithValue("$level", (int)site.SecurityLevel);
                     insertSiteCmd.Parameters.AddWithValue("$comment", site.Comment ?? "");
                     insertSiteCmd.Parameters.AddWithValue("$timestamp", site.Timestamp.ToString("o"));
+                    insertSiteCmd.Parameters.AddWithValue("$tag", site.Tag);
 
                     var siteId = (long)insertSiteCmd.ExecuteScalar();
 
@@ -105,6 +111,10 @@ namespace EmailAccountManager
                 }
 
                 transaction.Commit();
+
+                var setVersionCmd = connection.CreateCommand();
+                setVersionCmd.CommandText = $"PRAGMA user_version = {AsmUtility.GetDataBaseVersion()};";
+                setVersionCmd.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
@@ -113,6 +123,39 @@ namespace EmailAccountManager
             }
 
         }
+
+        private static void EnsureSchemaCompatibility()
+        {
+            using var connection = new SqliteConnection($"Data Source={_dbPath}");
+            connection.Open();
+
+
+            var versionCmd = connection.CreateCommand();
+            versionCmd.CommandText = "PRAGMA user_version;";
+            _oldVersion = Convert.ToInt32(versionCmd.ExecuteScalar());
+
+            if (_oldVersion < AsmUtility.GetDataBaseVersion())
+            {
+
+                var cmd = connection.CreateCommand();
+                cmd.CommandText = "PRAGMA table_info(SiteInfo);";
+
+                using var reader = cmd.ExecuteReader();
+                var columns = new HashSet<string>();
+                while (reader.Read())
+                {
+                    columns.Add(reader.GetString(1));
+                }
+
+                if (!columns.Contains("Tag"))
+                {
+                    var alterCmd = connection.CreateCommand();
+                    alterCmd.CommandText = "ALTER TABLE SiteInfo ADD COLUMN Tag INTEGER NOT NULL DEFAULT 0;";
+                    alterCmd.ExecuteNonQuery();
+                }
+            }
+        }
+
 
         public static ObservableCollection<SiteInfo> _LoadSites()
         {
@@ -123,7 +166,7 @@ namespace EmailAccountManager
             connection.Open();
 
             var getSitesCmd = connection.CreateCommand();
-            getSitesCmd.CommandText = "SELECT Id, SiteName, SecurityLevel, Comment, Timestamp FROM SiteInfo;";
+            getSitesCmd.CommandText = "SELECT Id, SiteName, SecurityLevel, Comment, Timestamp, Tag FROM SiteInfo;";
 
             using var reader = getSitesCmd.ExecuteReader();
             var siteMap = new Dictionary<long, SiteInfo>();
@@ -137,7 +180,8 @@ namespace EmailAccountManager
                     SecurityLevel = (SecurityLevel)reader.GetInt32(2),
                     Comment = reader.GetString(3),
                     Timestamp = DateTime.Parse(reader.GetString(4)),
-                    EmailList = new List<MailElm>()
+                    EmailList = new List<MailElm>(),
+                    Tag = reader.GetInt32(5),
                 };
                 siteMap[id] = site;
                 result.Add(site);
@@ -172,11 +216,12 @@ namespace EmailAccountManager
 
             try
             {
+                EnsureSchemaCompatibility();
                 result = _LoadSites();
             }
             catch (SqliteException ex)
             {
-                Logger.LogError($"Failed to load the database: {_dbPath}", ex);
+                Logger.LogError($"Failed to load the database: {_dbPath}, Loaded DB version: {_oldVersion}", ex);
 
                 var sb = new StringBuilder();
                 bool takeBackup = true;
@@ -254,7 +299,7 @@ namespace EmailAccountManager
             }
             catch (Exception ex)
             {
-                Logger.LogError($"Failed to load the database: {_dbPath}", ex);
+                Logger.LogError($"Failed to load the database: {_dbPath}, Loaded DB version: {_oldVersion}", ex);
 
                 var sb = new StringBuilder();
                 bool takeBackup = true;

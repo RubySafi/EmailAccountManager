@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace EmailAccountManager
 {
@@ -24,6 +14,8 @@ namespace EmailAccountManager
         public ObservableCollection<MailElm> EmailList { get; set; }
 
         private SiteInfo siteInfo;
+
+        private int TagNumber;
 
         public SecurityLevel selectedLevel { get; set; }
 
@@ -101,6 +93,7 @@ namespace EmailAccountManager
             siteInfo.SecurityLevel = SelectedSecurityLevel;
             siteInfo.Comment = SiteCommentTextBox.Text.Trim();
             siteInfo.EmailList = EmailList.ToList();
+            siteInfo.Tag = TagNumber;
 
             this.DialogResult = true; // Close the window and indicate success
             this.Close();
@@ -112,6 +105,49 @@ namespace EmailAccountManager
                 // Prevent focus movement by arrow keys
                 e.Handled = true;
             }
+        }
+
+        private void IncrementButton_Click(object sender, RoutedEventArgs e)
+        {
+            TagNumber = GetValidNumber(TagNumber + 1);
+            TagNumberTextBox.Text = TagNumber.ToString();
+        }
+
+        private void DecrementButton_Click(object sender, RoutedEventArgs e)
+        {
+            TagNumber = GetValidNumber(TagNumber - 1);
+            TagNumberTextBox.Text = TagNumber.ToString();
+        }
+
+        private int GetValidNumber(int number)
+        {
+            if (number < 0)
+            {
+                return TagNumber;
+            }
+            if (number > 1000)
+            {
+                return TagNumber;
+            }
+            return number;
+        }
+
+        private void TagNumberTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(TagNumberTextBox.Text, out int value))
+            {
+                var caretIndex = TagNumberTextBox.CaretIndex;
+                TagNumber = GetValidNumber(value);
+                TagNumberTextBox.Text = GetValidNumber(value).ToString();
+                TagNumberTextBox.CaretIndex = Math.Min(caretIndex, TagNumberTextBox.Text.Length);
+            }
+            else
+            {
+                var caretIndex = TagNumberTextBox.CaretIndex;
+                TagNumberTextBox.Text = TagNumber.ToString();
+                TagNumberTextBox.CaretIndex = Math.Min(caretIndex, TagNumberTextBox.Text.Length);
+            }
+
         }
 
         // Handle Cancel button click

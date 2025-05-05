@@ -12,6 +12,19 @@ namespace EmailAccountManager
     {
         public const int MeasureVersion = 1;
         public const int MinorVersion = 9;
+
+        public const int dbVersion = 1;
+        public const int AppSettingVersion = 0;
+
+        public static int GetDataBaseVersion()
+        {
+            return dbVersion;
+        }
+        public static int GetSettingVersion()
+        {
+            return AppSettingVersion;
+        }
+
         public static string GetAssemblyDirectoryName()
         {
             string location = Assembly.GetEntryAssembly().Location;

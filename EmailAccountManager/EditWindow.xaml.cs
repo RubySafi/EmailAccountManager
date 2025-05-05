@@ -25,6 +25,8 @@ namespace EmailAccountManager
 
         private SiteInfo siteInfo;
 
+        private int TagNumber;
+
         public SecurityLevel SelectedSecurityLevel { get; set; }
 
         public EditWindow(SiteInfo info)
@@ -37,6 +39,8 @@ namespace EmailAccountManager
 
             SiteNameTextBox.Text = info.SiteName;
             SiteCommentTextBox.Text = info.Comment;
+            TagNumber = info.Tag;
+            TagNumberTextBox.Text = TagNumber.ToString();
 
 
         }
@@ -85,6 +89,50 @@ namespace EmailAccountManager
             }
         }
 
+        private void IncrementButton_Click(object sender, RoutedEventArgs e)
+        {
+            TagNumber = GetValidNumber(TagNumber + 1);
+            TagNumberTextBox.Text = TagNumber.ToString();
+        }
+
+        private void DecrementButton_Click(object sender, RoutedEventArgs e)
+        {
+            TagNumber = GetValidNumber(TagNumber - 1);
+            TagNumberTextBox.Text = TagNumber.ToString();
+        }
+
+        private int GetValidNumber(int number)
+        {
+            if (number < 0)
+            {
+                return TagNumber;
+            }
+            if (number > 1000)
+            {
+                return TagNumber;
+            }
+            return number;
+        }
+
+        private void TagNumberTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(TagNumberTextBox.Text, out int value))
+            {
+                var caretIndex = TagNumberTextBox.CaretIndex;
+                TagNumber = GetValidNumber(value);
+                TagNumberTextBox.Text = GetValidNumber(value).ToString();
+                TagNumberTextBox.CaretIndex = Math.Min(caretIndex, TagNumberTextBox.Text.Length);
+            }
+            else
+            {
+                var caretIndex = TagNumberTextBox.CaretIndex;
+                TagNumberTextBox.Text = TagNumber.ToString();
+                TagNumberTextBox.CaretIndex = Math.Min(caretIndex, TagNumberTextBox.Text.Length);
+            }
+
+        }
+
+
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             string siteName = SiteNameTextBox.Text.Trim();
@@ -116,6 +164,7 @@ namespace EmailAccountManager
             siteInfo.SecurityLevel = SelectedSecurityLevel;
             siteInfo.EmailList = EmailList.ToList();
             siteInfo.Comment = SiteCommentTextBox.Text.Trim();
+            siteInfo.Tag = TagNumber;
 
             this.DialogResult = true;
             this.Close();

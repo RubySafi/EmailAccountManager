@@ -133,6 +133,7 @@
                 <DataGridTextColumn Header="Email Addresses" Binding="{Binding AllEmails}" Width="200"/>
                 <DataGridTextColumn Header="Site Comment" Binding="{Binding Comment}" Width="200"/>
                 <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp, StringFormat=\{0:yyyy/MM/dd\}}" Width="*"/>
+                <DataGridTextColumn Header="Tag" Binding="{Binding Tag}" Width="30"/>
             </DataGrid.Columns>
         </DataGrid>
 
