@@ -56,6 +56,7 @@ namespace EmailAccountManager
                 }
                 else
                 {
+                    // Reserved for future version compatibility handling
                     switch (version)
                     {
                         default:
