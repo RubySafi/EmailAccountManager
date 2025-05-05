@@ -11,7 +11,7 @@ namespace EmailAccountManager
     public static class AsmUtility
     {
         public const int MeasureVersion = 1;
-        public const int MinorVersion = 9;
+        public const int MinorVersion = 10;
 
         public const int dbVersion = 1;
         public const int AppSettingVersion = 1;

@@ -224,12 +224,14 @@ namespace EmailAccountManager
 
             FilteredSiteList.Clear();
 
-            foreach (var site in SiteList)
+            var filtered = SiteList
+                    .Where(site => string.IsNullOrWhiteSpace(searchString) || site.IsDisplay(searchString))
+                    .OrderByDescending(site => site.Tag)
+                    .ToList();
+
+            foreach (var site in filtered)
             {
-                if (string.IsNullOrWhiteSpace(searchString) || site.IsDisplay(searchString))
-                {
-                    FilteredSiteList.Add(site);
-                }
+                FilteredSiteList.Add(site);
             }
             UpdateStatusBar();
         }
@@ -360,7 +362,13 @@ namespace EmailAccountManager
         }
 
 
-
+        private void DataGridRow_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGridRow row)
+            {
+                row.IsSelected = true;
+            }
+        }
 
 
 
