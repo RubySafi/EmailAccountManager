@@ -37,6 +37,11 @@ namespace EmailAccountManager
             appSetting = AppSetting.Load();
             AutoLoginCheckBox.IsChecked = appSetting.IsAutoLogin;
 
+
+            var suggestForm = new SuggestTest();
+            bool? result = suggestForm.ShowDialog();  // または Show()
+            Application.Current.Shutdown();
+
             if (!TryLogin())
             {
                 skipDataBase = true;
