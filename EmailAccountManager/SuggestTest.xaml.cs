@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Printing;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace EmailAccountManager
 {
@@ -21,6 +23,8 @@ namespace EmailAccountManager
     /// </summary>
     public partial class SuggestTest : Window
     {
+
+        private const int DisplayMax = 5;
         private string _originalText = string.Empty;
         private bool _isUpdatingTextFromList = false;
         private Dictionary<string, int> RegisteredEmails = new Dictionary<string, int>
@@ -30,14 +34,18 @@ namespace EmailAccountManager
             {"info2@example.com", 3},
             {"info3@example.com", 4},
             {"info4@example.com", 5},
+            {"info3@example.commmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmdsdsdfsfafdisajfds", 48},
             {"contact@example.org", 6},
             {"support@mydomain.com", 7},
             {"hello@sample.net", 8}
         };
 
+
         public SuggestTest()
         {
             InitializeComponent();
+
+
         }
 
         private void EmailInputTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -53,9 +61,11 @@ namespace EmailAccountManager
             }
 
             var input = _originalText.ToLower();
-            var suggestions = RegisteredEmails.Keys
-                .Where(email => email.ToLower().StartsWith(input))
-                .OrderBy(k => RegisteredEmails[k]) // 使用頻度順に並べる
+            var suggestions = RegisteredEmails
+                .Where(kv => kv.Key.ToLower().StartsWith(input))
+                .OrderByDescending(kv => kv.Value)
+                .Select(kv => kv.Key)
+                .Take(DisplayMax)
                 .ToList();
 
             if (suggestions.Count == 1 && suggestions[0].Equals(input, StringComparison.OrdinalIgnoreCase))
@@ -165,16 +175,18 @@ namespace EmailAccountManager
 
                     if (string.IsNullOrEmpty(input))
                     {
-                        // 未入力の場合、全リスト（使用頻度順）
                         suggestions = RegisteredEmails
-                            .OrderBy(kv => kv.Value)
-                            .Select(kv => kv.Key);
+                            .OrderByDescending(kv => kv.Value)
+                            .Select(kv => kv.Key)
+                            .Take(DisplayMax);
                     }
                     else
                     {
-                        suggestions = RegisteredEmails.Keys
-                            .Where(email => email.ToLower().StartsWith(input.ToLower()))
-                            .OrderBy(k => RegisteredEmails[k]);
+                        suggestions = RegisteredEmails
+                            .Where(kv => kv.Key.ToLower().StartsWith(input.ToLower()))
+                            .OrderByDescending(kv => kv.Value)
+                            .Select(kv => kv.Key)
+                            .Take(DisplayMax);
                     }
 
                     SuggestionListBox.ItemsSource = suggestions.ToList();
@@ -229,6 +241,7 @@ namespace EmailAccountManager
                 _isUpdatingTextFromList = false;
             }
         }
+
 
     }
 }

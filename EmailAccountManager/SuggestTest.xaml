@@ -27,12 +27,26 @@
                         Width="{Binding ElementName=EmailInputTextBox, Path=ActualWidth}"
                         HorizontalAlignment="Left">
                     <ListBox Name="SuggestionListBox"
-                 MinWidth="{Binding ActualWidth, ElementName=EmailInputTextBox}"  
-                 MouseDoubleClick="SuggestionListBox_MouseDoubleClick"
-                 PreviewKeyDown="SuggestionListBox_PreviewKeyDown"
-                 HorizontalAlignment="Stretch"/>
+                             MinWidth="{Binding ActualWidth, ElementName=EmailInputTextBox}"  
+                             MouseDoubleClick="SuggestionListBox_MouseDoubleClick"
+                             PreviewKeyDown="SuggestionListBox_PreviewKeyDown"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             HorizontalAlignment="Stretch">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" 
+                                 TextTrimming="CharacterEllipsis"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Border>
             </Popup>
+
 
 
         </Grid>

@@ -38,6 +38,10 @@ namespace EmailAccountManager
             AutoLoginCheckBox.IsChecked = appSetting.IsAutoLogin;
 
 
+            var popupTestForm = new PopupTest();
+            bool? resultPopupTest = popupTestForm.ShowDialog();
+            Application.Current.Shutdown();
+
             var suggestForm = new SuggestTest();
             bool? result = suggestForm.ShowDialog();  // または Show()
             Application.Current.Shutdown();

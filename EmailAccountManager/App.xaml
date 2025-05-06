@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:EmailAccountManager"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!-- Enable DPI-aware behavior -->
+        <Style TargetType="Window">
+            <Setter Property="UseLayoutRounding" Value="True"/>
+        </Style>
     </Application.Resources>
 
 </Application>
