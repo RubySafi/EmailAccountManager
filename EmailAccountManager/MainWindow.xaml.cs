@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Controls.Primitives;
 using System.Diagnostics.Eventing.Reader;
+using System.Windows.Interop;
 
 namespace EmailAccountManager
 {
@@ -30,9 +31,13 @@ namespace EmailAccountManager
 
         bool skipDataBase = false;
 
+        DpiManager dpiManager;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            
 
             appSetting = AppSetting.Load();
             AutoLoginCheckBox.IsChecked = appSetting.IsAutoLogin;
@@ -63,7 +68,33 @@ namespace EmailAccountManager
             this.DataContext = this;
 
             this.Title = $"Account Manager {AsmUtility.GetAssemblyVersion()}";
+
+
+            this.SourceInitialized += EditWindow_SourceInitialized;
+            this.Loaded += (s, e) => dpiManager = new DpiManager(this);
         }
+
+
+        //DPI Changed Event handling
+        private void EditWindow_SourceInitialized(object sender, EventArgs e)
+        {
+            var source = (HwndSource)PresentationSource.FromVisual(this);
+            source.AddHook(WndProc);
+        }
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            const int WM_DPICHANGED = 0x02E0;
+
+            if (msg == WM_DPICHANGED)
+            {
+                dpiManager?.Update(this);
+                handled = false;
+            }
+
+            return IntPtr.Zero;
+        }
+
 
         public void InitializeDatabaseForUser()
         {
@@ -362,20 +393,15 @@ namespace EmailAccountManager
 
             Point relativePosition = e.GetPosition(dataGrid);
 
-            // Calculate the ideal position to show the context menu (the default position is strange)
             if (this.FindResource("SiteContextMenu") is ContextMenu contextMenu)
             {
-                contextMenu.PlacementTarget = dataGrid;
-                contextMenu.Placement = PlacementMode.Relative;
+                contextMenu.PlacementTarget = null;
+                contextMenu.Placement = PlacementMode.Absolute;
 
-                // Open the context menu and measure its size
-                contextMenu.IsOpen = true;
-                contextMenu.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-                contextMenu.Arrange(new Rect(0, 0, contextMenu.DesiredSize.Width, contextMenu.DesiredSize.Height));
-
-                // Set the position based on the measured size
-                contextMenu.HorizontalOffset = relativePosition.X + contextMenu.DesiredSize.Width;
-                contextMenu.VerticalOffset = relativePosition.Y;
+                var devicePosition = PointToScreen(Mouse.GetPosition(this));
+                var logicalPosition = dpiManager.DeviceToLogicalMatrix.Transform(devicePosition);
+                contextMenu.HorizontalOffset = logicalPosition.X + 0;
+                contextMenu.VerticalOffset = logicalPosition.Y + 0;
 
                 contextMenu.IsOpen = true;
                 e.Handled = true;

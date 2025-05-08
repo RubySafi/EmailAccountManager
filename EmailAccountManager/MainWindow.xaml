@@ -70,7 +70,7 @@
             <MenuItem Header="New Item (_N)" InputGestureText="Ctrl+N" Click="AddMenuItem_Click"/>
             <MenuItem Header="Edit Item (_E)" InputGestureText="Ctrl+E" Click="EditMenuItem_Click"/>
             <Separator/>
-            <MenuItem Header="Delete Item (_D)" InputGestureText="Ctrl+D" Click="DeleteMenuItem_Click"/>
+            <MenuItem Header="Delete Item" InputGestureText="Delete" Click="DeleteMenuItem_Click"/>
         </ContextMenu>
 
     </Window.Resources>
