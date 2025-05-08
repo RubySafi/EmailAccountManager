@@ -242,6 +242,87 @@ namespace EmailAccountManager
             }
         }
 
+        int i = 0;
+        private void SuggestionListBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in SuggestionListBox.Items)
+            {
+                if (SuggestionListBox.ItemContainerGenerator.ContainerFromItem(item) is ListBoxItem listBoxItem)
+                {
+                    listBoxItem.MouseEnter += ListBoxItem_MouseEnter;
+                    listBoxItem.MouseLeave += ListBoxItem_MouseLeave;
+                }
+            }
+        }
+        private void ListBoxItem_MouseEnter(object sender, MouseEventArgs e)
+        {
+            PresentationSource source = PresentationSource.FromVisual(this);
+            Matrix logicalToDeviceMatrix = source.CompositionTarget.TransformToDevice;
+            Matrix deviceToLogicalMatrix = source.CompositionTarget.TransformFromDevice;
+
+            i++;
+            if (sender is ListBoxItem item && item.DataContext is string content)
+            {
+                var textBlock = FindVisualChild<TextBlock>(item);
+                if (textBlock != null && IsTextTrimmed(textBlock))
+                {
+                 
+                    HoverPopupTextBlock.Text = content;
+
+                    var devicePosition = PointToScreen(Mouse.GetPosition(this));
+                    var logicalPosition = deviceToLogicalMatrix.Transform(devicePosition);
+                    HoverPopup.HorizontalOffset = logicalPosition.X + 0;
+                    HoverPopup.VerticalOffset = logicalPosition.Y + 20;
+
+                    HoverPopup.IsOpen = true;
+                }
+            }
+        }
+        private T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T typedChild)
+                    return typedChild;
+
+                var descendant = FindVisualChild<T>(child);
+                if (descendant != null)
+                    return descendant;
+            }
+            return null;
+        }
+
+
+        private void ListBoxItem_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (HoverPopup.IsOpen)
+            {
+                HoverPopup.IsOpen = false;
+            }
+        }
+
+        private bool IsTextTrimmed(TextBlock textBlock)
+        {
+            var typeface = new Typeface(
+                textBlock.FontFamily,
+                textBlock.FontStyle,
+                textBlock.FontWeight,
+                textBlock.FontStretch);
+
+            var formattedText = new FormattedText(
+                textBlock.Text,
+                System.Globalization.CultureInfo.CurrentCulture,
+                textBlock.FlowDirection,
+                typeface,
+                textBlock.FontSize,
+                Brushes.Black,
+                new NumberSubstitution(),
+                1);
+
+            // 表示できる幅を超えているかどうかで判定
+            return formattedText.Width > textBlock.ActualWidth;
+        }
 
     }
 }

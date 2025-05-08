@@ -31,6 +31,7 @@
                              MouseDoubleClick="SuggestionListBox_MouseDoubleClick"
                              PreviewKeyDown="SuggestionListBox_PreviewKeyDown"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             Loaded="SuggestionListBox_Loaded"
                              HorizontalAlignment="Stretch">
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
@@ -47,7 +48,11 @@
                 </Border>
             </Popup>
 
-
+            <Popup Name="HoverPopup" IsOpen="False" Placement="Absolute" StaysOpen="True" AllowsTransparency="True" IsHitTestVisible="False">
+                <Border Background="LightYellow" BorderBrush="Black" BorderThickness="1" Padding="4">
+                    <TextBlock Name="HoverPopupTextBlock" TextWrapping="Wrap" MaxWidth="300"/>
+                </Border>
+            </Popup>
 
         </Grid>
     </Grid>
