@@ -37,10 +37,10 @@ namespace EmailAccountManager
             appSetting = AppSetting.Load();
             AutoLoginCheckBox.IsChecked = appSetting.IsAutoLogin;
 
-            
+            /*
             var suggestForm = new SuggestTest();
-            bool? result = suggestForm.ShowDialog();  // または Show()
-            Application.Current.Shutdown();
+            bool? result = suggestForm.ShowDialog();  // Show()
+            Application.Current.Shutdown();/**/
 
             if (!TryLogin())
             {
@@ -243,7 +243,7 @@ namespace EmailAccountManager
 
         private void AddItem()
         {
-            AddWindow addWindow = new AddWindow();
+            AddWindow addWindow = new AddWindow(GetRegisteredEmails());
             bool? result = addWindow.ShowDialog();
 
             if (result == true)
@@ -307,13 +307,35 @@ namespace EmailAccountManager
             DeleteItem();
         }
 
+
+        private Dictionary<string, int> GetRegisteredEmails()
+        {
+
+            Dictionary<string, int> RegisteredEmails = new Dictionary<string, int>();
+
+            foreach (SiteInfo site in SiteList)
+            {
+                foreach (var elm in site.EmailList)
+                { 
+                    if (!RegisteredEmails.ContainsKey(elm.Address))
+                    {
+                        RegisteredEmails[elm.Address] = 0;
+                    }
+                    RegisteredEmails[elm.Address]++;
+                }
+            }
+
+            return RegisteredEmails;
+        }
+
         private void EditItem()
         {
             if (SiteDataGrid.SelectedItem != null)
             {
+
                 var originalItem = (SiteInfo)SiteDataGrid.SelectedItem;
                 var itemCopy = new SiteInfo(originalItem);
-                EditWindow editWindow = new EditWindow(itemCopy);
+                EditWindow editWindow = new EditWindow(itemCopy, GetRegisteredEmails());
                 bool? result = editWindow.ShowDialog();
 
                 if (result == true)
