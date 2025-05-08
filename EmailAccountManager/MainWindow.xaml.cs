@@ -14,6 +14,7 @@ using System.IO;
 using System.Windows.Controls.Primitives;
 using System.Diagnostics.Eventing.Reader;
 using System.Windows.Interop;
+using System.Runtime.InteropServices;
 
 namespace EmailAccountManager
 {
@@ -72,6 +73,8 @@ namespace EmailAccountManager
 
             this.SourceInitialized += EditWindow_SourceInitialized;
             this.Loaded += (s, e) => dpiManager = new DpiManager(this);
+
+                
         }
 
 
@@ -94,6 +97,8 @@ namespace EmailAccountManager
 
             return IntPtr.Zero;
         }
+
+
 
 
         public void InitializeDatabaseForUser()
@@ -188,39 +193,6 @@ namespace EmailAccountManager
             }
         }
 
-        private void SetDebugData()
-        {
-            //SiteList = new List<SiteInfo>
-            SiteList = new ObservableCollection<SiteInfo>()
-            {
-                new SiteInfo
-                {
-                    SiteName = "ExampleSite",
-                    Comment = "A sample website",
-                    Timestamp = DateTime.Now.AddDays(-2),
-                    SecurityLevel = SecurityLevel.General,
-                    EmailList = new List<MailElm>
-                    {
-                        new MailElm { Address = "user1@example.com", Comment = "Main account", Timestamp = DateTime.Now.AddDays(-2) },
-                        new MailElm { Address = "user2@example.com", Comment = "Backup", Timestamp = DateTime.Now.AddDays(-1) },
-                        new MailElm { Address = "user3@example.com", Comment = "Other", Timestamp = DateTime.Now },
-                        new MailElm { Address = "user4@example.com", Comment = "Other", Timestamp = DateTime.Now },
-                        new MailElm { Address = "user5@example.com", Comment = "Other", Timestamp = DateTime.Now }
-                    }
-                },
-                new SiteInfo
-                {
-                    SiteName = "FinanceApp",
-                    Comment = "Banking portal",
-                    Timestamp = DateTime.Now.AddMonths(-1),
-                    SecurityLevel = SecurityLevel.Finance,
-                    EmailList = new List<MailElm>
-                    {
-                        new MailElm { Address = "finance@example.com", Comment = "Primary", Timestamp = DateTime.Now.AddMonths(-1) }
-                    }
-                }
-            };
-        }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {

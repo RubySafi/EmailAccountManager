@@ -11,6 +11,7 @@ namespace EmailAccountManager
     {
         private Mutex _mutex;
 
+
         protected override void OnStartup(StartupEventArgs e)
         {
             const string mutexName = "EmailAccountManager_v1_RubySafi";
