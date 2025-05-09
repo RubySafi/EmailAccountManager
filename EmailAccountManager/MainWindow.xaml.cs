@@ -158,7 +158,7 @@ namespace EmailAccountManager
                 e.Handled = true;
                 AddItem();
             }
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.D)
+            if (e.Key == Key.Delete)
             {
                 e.Handled = true;
                 DeleteItem();
